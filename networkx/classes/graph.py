@@ -172,6 +172,10 @@ class Graph(object):
 
     For details on these and other miscellaneous methods, see below.
     """
+    node_dict_factory = dict
+    adjlist_dict_factory = dict
+    edge_attr_dict_factory = dict
+
     def __init__(self, data=None, **attr):
         """Initialize a graph with edges, name, graph attributes.
 
@@ -206,9 +210,14 @@ class Graph(object):
         {'day': 'Friday'}
 
         """
+
+        self.node_dict_factory = ndf = self.node_dict_factory
+        self.adjlist_dict_factory = self.adjlist_dict_factory
+        self.edge_attr_dict_factory = self.edge_attr_dict_factory
+
         self.graph = {}   # dictionary for graph attributes
-        self.node = {}    # empty node dict (created before convert)
-        self.adj = {}     # empty adjacency dict
+        self.node = ndf()    # empty node dict (created before convert)
+        self.adj = ndf()     # empty adjacency dict
         # attempt to load graph with data
         if data is not None:
             convert.to_networkx_graph(data,create_using=self)
@@ -371,7 +380,7 @@ class Graph(object):
                 raise NetworkXError(\
                     "The attr_dict argument must be a dictionary.")
         if n not in self.node:
-            self.adj[n] = {}
+            self.adj[n] = self.adjlist_dict_factory()
             self.node[n] = attr_dict
         else: # update attr even if node already exists
             self.node[n].update(attr_dict)
@@ -428,7 +437,7 @@ class Graph(object):
             except TypeError:
                 nn,ndict = n
                 if nn not in self.node:
-                    self.adj[nn] = {}
+                    self.adj[nn] = self.adjlist_dict_factory()
                     newdict = attr.copy()
                     newdict.update(ndict)
                     self.node[nn] = newdict
@@ -438,7 +447,7 @@ class Graph(object):
                     olddict.update(ndict)
                 continue
             if newnode:
-                self.adj[n] = {}
+                self.adj[n] = self.adjlist_dict_factory()
                 self.node[n] = attr.copy()
             else:
                 self.node[n].update(attr)
@@ -704,13 +713,13 @@ class Graph(object):
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.node:
-            self.adj[u] = {}
+            self.adj[u] = self.adjlist_dict_factory()
             self.node[u] = {}
         if v not in self.node:
-            self.adj[v] = {}
+            self.adj[v] = self.adjlist_dict_factory()
             self.node[v] = {}
         # add the edge
-        datadict=self.adj[u].get(v,{})
+        datadict=self.adj[u].get(v,self.edge_attr_dict_factory())
         datadict.update(attr_dict)
         self.adj[u][v] = datadict
         self.adj[v][u] = datadict
@@ -780,12 +789,12 @@ class Graph(object):
                 raise NetworkXError(\
                     "Edge tuple %s must be a 2-tuple or 3-tuple."%(e,))
             if u not in self.node:
-                self.adj[u] = {}
+                self.adj[u] = self.adjlist_dict_factory()
                 self.node[u] = {}
             if v not in self.node:
-                self.adj[v] = {}
+                self.adj[v] = self.adjlist_dict_factory()
                 self.node[v] = {}
-            datadict=self.adj[u].get(v,{})
+            datadict=self.adj[u].get(v,self.edge_attr_dict_factory())
             datadict.update(attr_dict)
             datadict.update(dd)
             self.adj[u][v] = datadict
@@ -1492,7 +1501,7 @@ class Graph(object):
         self_adj=self.adj
         # add nodes and edges (undirected method)
         for n in H.node:
-            Hnbrs={}
+            Hnbrs=H.adjlist_dict_factory()
             H_adj[n]=Hnbrs
             for nbr,d in self_adj[n].items():
                 if nbr in H_adj:

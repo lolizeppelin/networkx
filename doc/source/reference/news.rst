@@ -3,6 +3,12 @@
 
 Release Log
 ===========
+NetworkX 1.9.2
+--------------
+add node_dict_factory adjlist_dict_factory edge_attr_dict_factory like 1.10
+
+lolizeppelin@gmail.com
+
 
 NetworkX 1.9.1
 --------------

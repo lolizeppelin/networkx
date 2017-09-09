@@ -196,13 +196,17 @@ class DiGraph(Graph):
         {'day': 'Friday'}
 
         """
+        self.node_dict_factory = ndf = self.node_dict_factory
+        self.adjlist_dict_factory = self.adjlist_dict_factory
+        self.edge_attr_dict_factory = self.edge_attr_dict_factory
+
         self.graph = {} # dictionary for graph attributes
-        self.node = {} # dictionary for node attributes
+        self.node = ndf() # dictionary for node attributes
         # We store two adjacency lists:
         # the  predecessors of node n are stored in the dict self.pred
         # the successors of node n are stored in the dict self.succ=self.adj
-        self.adj = {}  # empty adjacency dictionary
-        self.pred = {}  # predecessor
+        self.adj = ndf()  # empty adjacency dictionary
+        self.pred = ndf()  # predecessor
         self.succ = self.adj  # successor
 
         # attempt to load graph with data
@@ -262,11 +266,10 @@ class DiGraph(Graph):
             try:
                 attr_dict.update(attr)
             except AttributeError:
-                raise NetworkXError(\
-                    "The attr_dict argument must be a dictionary.")
+                raise NetworkXError("The attr_dict argument must be a dictionary.")
         if n not in self.succ:
-            self.succ[n] = {}
-            self.pred[n] = {}
+            self.succ[n] = self.adjlist_dict_factory()
+            self.pred[n] = self.adjlist_dict_factory()
             self.node[n] = attr_dict
         else: # update attr even if node already exists
             self.node[n].update(attr_dict)
@@ -323,8 +326,8 @@ class DiGraph(Graph):
             except TypeError:
                 nn,ndict = n
                 if nn not in self.succ:
-                    self.succ[nn] = {}
-                    self.pred[nn] = {}
+                    self.succ[nn] = self.adjlist_dict_factory()
+                    self.pred[nn] = self.adjlist_dict_factory()
                     newdict = attr.copy()
                     newdict.update(ndict)
                     self.node[nn] = newdict
@@ -334,8 +337,8 @@ class DiGraph(Graph):
                     olddict.update(ndict)
                 continue
             if newnode:
-                self.succ[n] = {}
-                self.pred[n] = {}
+                self.succ[n] = self.adjlist_dict_factory()
+                self.pred[n] = self.adjlist_dict_factory()
                 self.node[n] = attr.copy()
             else:
                 self.node[n].update(attr)
@@ -483,15 +486,15 @@ class DiGraph(Graph):
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.succ:
-            self.succ[u]={}
-            self.pred[u]={}
+            self.succ[u]= self.adjlist_dict_factory()
+            self.pred[u]= self.adjlist_dict_factory()
             self.node[u] = {}
         if v not in self.succ:
-            self.succ[v]={}
-            self.pred[v]={}
+            self.succ[v]= self.adjlist_dict_factory()
+            self.pred[v]= self.adjlist_dict_factory()
             self.node[v] = {}
         # add the edge
-        datadict=self.adj[u].get(v,{})
+        datadict=self.adj[u].get(v,self.edge_attr_dict_factory())
         datadict.update(attr_dict)
         self.succ[u][v]=datadict
         self.pred[v][u]=datadict
@@ -561,14 +564,14 @@ class DiGraph(Graph):
                 raise NetworkXError(\
                     "Edge tuple %s must be a 2-tuple or 3-tuple."%(e,))
             if u not in self.succ:
-                self.succ[u] = {}
-                self.pred[u] = {}
+                self.succ[u] = self.adjlist_dict_factory()
+                self.pred[u] = self.adjlist_dict_factory()
                 self.node[u] = {}
             if v not in self.succ:
-                self.succ[v] = {}
-                self.pred[v] = {}
+                self.succ[v] = self.adjlist_dict_factory()
+                self.pred[v] = self.adjlist_dict_factory()
                 self.node[v] = {}
-            datadict=self.adj[u].get(v,{})
+            datadict=self.adj[u].get(v,self.edge_attr_dict_factory())
             datadict.update(attr_dict)
             datadict.update(dd)
             self.succ[u][v] = datadict
@@ -1225,8 +1228,8 @@ class DiGraph(Graph):
         self_succ=self.succ
         # add nodes
         for n in H:
-            H_succ[n]={}
-            H_pred[n]={}
+            H_succ[n]=H.adjlist_dict_factory()
+            H_pred[n]=H.adjlist_dict_factory()
         # add edges
         for u in H_succ:
             Hnbrs=H_succ[u]

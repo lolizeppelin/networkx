@@ -235,12 +235,12 @@ class MultiDiGraph(MultiGraph,DiGraph):
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.succ:
-            self.succ[u] = {}
-            self.pred[u] = {}
+            self.succ[u] = self.adjlist_dict_factory()
+            self.pred[u] = self.adjlist_dict_factory()
             self.node[u] = {}
         if v not in self.succ:
-            self.succ[v] = {}
-            self.pred[v] = {}
+            self.succ[v] = self.adjlist_dict_factory()
+            self.pred[v] = self.adjlist_dict_factory()
             self.node[v] = {}
         if v in self.succ[u]:
             keydict=self.adj[u][v]
@@ -250,7 +250,7 @@ class MultiDiGraph(MultiGraph,DiGraph):
                 key=len(keydict)
                 while key in keydict:
                     key+=1
-            datadict=keydict.get(key,{})
+            datadict=keydict.get(key,self.edge_attr_dict_factory())
             datadict.update(attr_dict)
             keydict[key]=datadict
         else:
@@ -809,8 +809,8 @@ class MultiDiGraph(MultiGraph,DiGraph):
         self_pred=self.pred
         # add nodes
         for n in H:
-            H_succ[n]={}
-            H_pred[n]={}
+            H_succ[n]=H.adjlist_dict_factory()
+            H_pred[n]=H.adjlist_dict_factory()
         # add edges
         for u in H_succ:
             Hnbrs=H_succ[u]

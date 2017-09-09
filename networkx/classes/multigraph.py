@@ -236,10 +236,10 @@ class MultiGraph(Graph):
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.adj:
-            self.adj[u] = {}
+            self.adj[u] = self.adjlist_dict_factory()
             self.node[u] = {}
         if v not in self.adj:
-            self.adj[v] = {}
+            self.adj[v] = self.adjlist_dict_factory()
             self.node[v] = {}
         if v in self.adj[u]:
             keydict=self.adj[u][v]
@@ -249,14 +249,14 @@ class MultiGraph(Graph):
                 key=len(keydict)
                 while key in keydict:
                     key+=1
-            datadict=keydict.get(key,{})
+            datadict=keydict.get(key,self.edge_attr_dict_factory())
             datadict.update(attr_dict)
             keydict[key]=datadict
         else:
             # selfloops work this way without special treatment
             if key is None:
                 key=0
-            datadict={}
+            datadict=self.edge_attr_dict_factory()
             datadict.update(attr_dict)
             keydict={key:datadict}
             self.adj[u][v] = keydict
@@ -956,7 +956,7 @@ class MultiGraph(Graph):
         self_adj=self.adj
         # add nodes and edges (undirected method)
         for n in H:
-            Hnbrs={}
+            Hnbrs=H.adjlist_dict_factory()
             H_adj[n]=Hnbrs
             for nbr,edgedict in self_adj[n].items():
                 if nbr in H_adj:
