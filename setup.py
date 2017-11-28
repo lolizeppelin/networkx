@@ -129,7 +129,7 @@ if __name__ == "__main__":
         download_url     = release.download_url,
         classifiers      = release.classifiers,
         packages         = packages,
-        data_files       = data,
+        #data_files       = data,
         package_data     = package_data,
         install_requires = install_requires,
         test_suite       = 'nose.collector',

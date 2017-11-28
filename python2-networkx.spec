@@ -44,7 +44,8 @@ utils copy from openstack
 %defattr(-,root,root,-)
 %dir %{python_sitelib}/%{proj_name}*
 %{python_sitelib}/%{proj_name}*/*
-%doc doc/*
+%doc *.txt
+%doc examples
 
 %changelog
 
