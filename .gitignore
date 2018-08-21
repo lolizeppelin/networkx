@@ -89,5 +89,5 @@ ENV/
 .ropeproject
 .idea
 .vs
-.sln
-.pyproj
+*.sln
+*.pyproj
