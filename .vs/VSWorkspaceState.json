@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\networkx",
     "\\networkx\\tests"
   ],
-  "SelectedNode": "\\networkx\\tests\\benchmark.py",
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }
